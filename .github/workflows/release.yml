@@ -1,0 +1,44 @@
+name: Release
+
+# Whenever the Version in elka-pos.php is raised on main, publish a GitHub Release
+# (tag vX.Y.Z + elka-pos.zip). The plugin's built-in updater reads these releases,
+# so sites see the new version under Plugins.
+
+on:
+  push:
+    branches: [main]
+    paths: ['elka-pos.php']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read version
+        id: v
+        run: echo "version=$(grep -m1 -oP 'Version:\s+\K[0-9.]+' elka-pos.php)" >> "$GITHUB_OUTPUT"
+      - name: Skip if release exists
+        id: exists
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "v${{ steps.v.outputs.version }}" >/dev/null 2>&1; then echo "skip=true" >> "$GITHUB_OUTPUT"; fi
+      - name: Build zip
+        if: steps.exists.outputs.skip != 'true'
+        run: |
+          mkdir -p build/elka-pos
+          git archive HEAD | tar -x -C build/elka-pos
+          rm -rf build/elka-pos/.github build/elka-pos/.gitignore
+          (cd build && zip -qr ../elka-pos.zip elka-pos)
+      - name: Create release
+        if: steps.exists.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${{ steps.v.outputs.version }}" elka-pos.zip \
+            --title "ELKA Pokladna ${{ steps.v.outputs.version }}" \
+            --generate-notes
