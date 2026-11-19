@@ -2,7 +2,7 @@
 Requires at least: 6.4
 Requires PHP: 7.4
 WC requires at least: 8.0
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 
 Moderní pokladna (POS) pro prodejnu ELKA Fashion v Mělníku. Nahrazuje ukončený
@@ -73,6 +73,9 @@ v hledání – připraveno pro čtečku čárových kódů.
   přes .htaccess; na Nginx doplňte deny pravidlo).
 
 == Changelog ==
+
+= 1.0.5 =
+* Automatické aktualizace z GitHubu (adamlescisin/elka-pos, Releases): nová verze se objeví v Pluginy a jde nainstalovat jedním kliknutím. Odkaz „Zkontrolovat aktualizace“ u pluginu.
 
 = 1.0.4 =
 * Pokladna přesunuta na /kasa/ (adresa nastavitelná). /pokladna/ je opět pokladna (checkout) e-shopu; starý service worker se sám odstraní.

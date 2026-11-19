@@ -3,7 +3,7 @@
  * Plugin Name:       ELKA Pokladna
  * Plugin URI:        https://elkafashion.cz
  * Description:       Moderní pokladna (POS) pro prodejnu ELKA Fashion – produkty a velikosti, zákaznice a ELKA Klub, slevy a kupóny, vratky, tisk účtenek 80 mm, e-mailové doklady, offline režim a EET 2.0.
- * Version:           1.0.4
+ * Version:           1.0.5
  * Requires at least: 6.4
  * Requires PHP:      7.4
  * Requires Plugins:  woocommerce
@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'ELKA_POS_VERSION', '1.0.4' );
+define( 'ELKA_POS_VERSION', '1.0.5' );
 define( 'ELKA_POS_FILE', __FILE__ );
 define( 'ELKA_POS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ELKA_POS_URL', plugin_dir_url( __FILE__ ) );
@@ -30,6 +30,7 @@ require_once ELKA_POS_DIR . 'includes/class-elka-pos-eet.php';
 require_once ELKA_POS_DIR . 'includes/class-elka-pos-rest.php';
 require_once ELKA_POS_DIR . 'includes/class-elka-pos-app.php';
 require_once ELKA_POS_DIR . 'includes/class-elka-pos-admin.php';
+require_once ELKA_POS_DIR . 'includes/class-elka-pos-updater.php';
 
 // HPOS + block checkout compatibility.
 add_action(
@@ -47,6 +48,7 @@ register_deactivation_hook( __FILE__, array( 'Elka_Pos_App', 'deactivate' ) );
 add_action(
 	'plugins_loaded',
 	function () {
+		Elka_Pos_Updater::init(); // Updates work even when WooCommerce is inactive.
 		if ( ! class_exists( 'WooCommerce' ) ) {
 			add_action(
 				'admin_notices',
